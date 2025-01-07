@@ -95,9 +95,11 @@ public class Timer {
     private void timesUp() {
         timesup = true;
         if (timesup == true) {
+            
+            // Disable textfield
            submit.submitAction();
         } else {
-            
+            //enable textField
         }
     }
 

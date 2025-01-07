@@ -40,7 +40,7 @@ public class ExamPanel {
         // Initialize questions
         questionsPanel.initializeQuestions();
         bp.setCenter(questionsPanel.getUI());
-        BorderPane.setAlignment(questionsPanel.getUI(), Pos.CENTER);
+        BorderPane.setAlignment(questionsPanel.getUI(), Pos.TOP_CENTER);
 
         return bp;
     }

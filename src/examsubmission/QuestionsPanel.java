@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -16,8 +18,11 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.stage.StageStyle;
 
@@ -25,14 +30,14 @@ public class QuestionsPanel {
 
     private final List<TextArea> answerBoxes = new ArrayList<>();
     private final List<ImageView> imageQuestions = new ArrayList<>();
-    
+
     private Button previousButton;
     private Button nextButton;
     private FormDetails user;
     private Button btn;
 
-    private final VBox container = new VBox(10);
-    private final VBox questionPane = new VBox(20);
+    private final BorderPane container = new BorderPane();
+    private final GridPane questionPane = new GridPane();
 
     private int currentIndex = 0;
     private int randomIndex;
@@ -76,19 +81,17 @@ public class QuestionsPanel {
                 String imagePath = questionFile.getPath();
                 Image image = new Image("file:" + imagePath);
                 ImageView imageView = new ImageView(image);
-                
+
                 imageView.setPreserveRatio(false);
                 imageView.setFitWidth(1200);
-                imageView.setFitHeight(400);
+                imageView.setFitHeight(300);
                 imageQuestions.add(imageView);
 
                 TextArea textArea = new TextArea();
                 textArea.setPromptText("Enter your code here...");
                 textArea.setPrefColumnCount(25);
-                textArea.setPrefRowCount(25);
-                textArea.setPadding(new Insets(10));
+                textArea.setPrefRowCount(20);
                 textArea.setWrapText(true);
-                textArea.setPrefSize(800, 200); // Fixed dimensions for all TextAreas
                 answerBoxes.add(textArea);
             }
 
@@ -123,19 +126,36 @@ public class QuestionsPanel {
         HBox navigationButtons = new HBox(20, previousButton, nextButton);
         navigationButtons.setAlignment(Pos.CENTER);
 
-        container.setAlignment(Pos.CENTER);
-        container.setPadding(new Insets(20));
-        container.getChildren().addAll(questionPane, navigationButtons);
+        container.setCenter(questionPane);
+        container.setBottom(navigationButtons);
+        BorderPane.setMargin(navigationButtons, new Insets(0, 0, 30, 0));
+        
+        
+//        container.setPadding(new Insets(20));
+//        container.getChildren().addAll(questionPane, navigationButtons);
     }
 
     private void updateQuestionPane() {
         questionPane.getChildren().clear();
         Region spacer = new Region(); // Optional spacer for consistent alignment
         spacer.setMinHeight(20);
-        questionPane.getChildren().addAll(imageQuestions.get(currentIndex), answerBoxes.get(currentIndex));
-
+//        questionPane.getChildren().addAll(imageQuestions.get(currentIndex), answerBoxes.get(currentIndex));
+        questionPane.addRow(0, imageQuestions.get(currentIndex));
+        questionPane.addRow(1, answerBoxes.get(currentIndex));
+        GridPane.setHalignment(imageQuestions.get(currentIndex), HPos.CENTER);
+        GridPane.setValignment(imageQuestions.get(currentIndex), VPos.CENTER);
+        GridPane.setHalignment(answerBoxes.get(currentIndex), HPos.CENTER);
+        GridPane.setValignment(answerBoxes.get(currentIndex), VPos.CENTER);
+        questionPane.maxHeight(500);
+        questionPane.setAlignment(Pos.CENTER);
+        questionPane.setHgap(10);
+        questionPane.setVgap(10);
+        questionPane.setPadding(new Insets(10));
+        
+ 
         previousButton.setDisable(currentIndex == 0);
         nextButton.setDisable(currentIndex == imageQuestions.size() - 1);
+        answerBoxes.get(currentIndex).requestFocus();
     }
 
     private void navigateToPreviousQuestion() {
@@ -152,7 +172,7 @@ public class QuestionsPanel {
         }
     }
 
-    public VBox getUI() {
+    public BorderPane getUI() {
         return container;
     }
 
